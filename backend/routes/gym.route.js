@@ -1,8 +1,9 @@
 import express from "express";
-import { protect, requireRole } from "../middlewares/auth.middleware.js";
-import { createGym, getGymById, getGyms } from "../controllers/gym.controller.js";
+import { protect, requireGymOwnership, requireRole } from "../middlewares/auth.middleware.js";
+import { createGym, deleteGym, getGymById, getGyms, toggleFavourite, updateGym } from "../controllers/gym.controller.js";
 import { createGymValidator, searchGymValidator } from "../validators/gym.validator.js";
 import { validate } from "../middlewares/validate.middleware.js";
+import { Gym } from "../models/gym.model.js";
 
 export const gymRoute = express.Router();
 
@@ -411,3 +412,235 @@ gymRoute.get('/gyms', searchGymValidator, validate, getGyms);
  */
 //serch gym by id
 gymRoute.get('/gyms/:id', getGymById);
+
+/**
+ * @openapi
+ * /api/gyms/{id}:
+ *   put:
+ *     summary: Update gym details
+ *     tags: [Gyms]
+ *
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Gym ID
+ *         schema:
+ *           type: string
+ *           example: "66a123456789abcdef"
+ *
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "Fitness First Gym"
+ *
+ *               description:
+ *                 type: string
+ *                 example: "Modern fitness centre with advanced equipment"
+ *
+ *               location:
+ *                 type: object
+ *                 properties:
+ *                   type:
+ *                     type: string
+ *                     example: "Point"
+ *                   coordinates:
+ *                     type: array
+ *                     items:
+ *                       type: number
+ *                     example:
+ *                       - 151.2093
+ *                       - -33.8688
+ *
+ *               address:
+ *                 type: object
+ *                 properties:
+ *                   street:
+ *                     type: string
+ *                     example: "George Street"
+ *                   suburb:
+ *                     type: string
+ *                     example: "Sydney"
+ *                   state:
+ *                     type: string
+ *                     example: "NSW"
+ *                   postcode:
+ *                     type: string
+ *                     example: "2000"
+ *
+ *               facilities:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 example:
+ *                   - Pool
+ *                   - Sauna
+ *                   - Free weights
+ *
+ *               capacity:
+ *                 type: number
+ *                 example: 100
+ *
+ *               pricePerVisit:
+ *                 type: number
+ *                 example: 20
+ *
+ *               isActive:
+ *                 type: boolean
+ *                 example: true
+ *
+ *     responses:
+ *       200:
+ *         description: Gym updated successfully
+ *
+ *       400:
+ *         description: Validation failed or invalid gym ID
+ *
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *
+ *       403:
+ *         description: Forbidden - User does not own this gym
+ *
+ *       404:
+ *         description: Gym not found
+ *
+ *       500:
+ *         description: Internal server error
+ */
+
+//updte gym by id
+gymRoute.put('/gyms/:id', protect, requireRole('owner', 'admin'), requireGymOwnership(Gym), updateGym);
+
+/**
+ * @openapi
+ * /api/gyms/{id}:
+ *   delete:
+ *     summary: Delete gym
+ *     tags: [Gyms]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Gym ID
+ *         schema:
+ *           type: string
+ *           example: "689d7d98a123456789abcdef"
+ *
+ *     responses:
+ *       200:
+ *         description: Gym deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Gym deleted successfully
+ *
+ *       400:
+ *         description: Invalid gym ID
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Invalid gym ID
+ *
+ *       401:
+ *         description: Unauthorized - Missing or invalid token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Unauthorized
+ *
+ *       403:
+ *         description: Forbidden - User does not have permission to delete this gym
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *
+ *       404:
+ *         description: Gym not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Gym not found
+ *
+ *       500:
+ *         description: Internal server error
+ */
+
+
+// Delete gym route
+gymRoute.delete('/gyms/:id', protect, requireRole('owner', 'admin'), requireGymOwnership(Gym), deleteGym);
+
+/**
+ * @openapi
+ * /api/gyms/{id}/favourite:
+ *   post:
+ *     summary: Toggle favourite gym
+ *     tags: [Gyms]
+ *     security:
+ *       - bearerAuth: []
+ *
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Gym ID
+ *         schema:
+ *           type: string
+ *
+ *     responses:
+ *       200:
+ *         description: Favourite status updated successfully
+ *
+ *       404:
+ *         description: Gym not found
+ *
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *
+ *       500:
+ *         description: Internal server error
+ */
+
+// Toggle favourite gym
+gymRoute.post('/gyms/:id/favourite', protect, toggleFavourite);

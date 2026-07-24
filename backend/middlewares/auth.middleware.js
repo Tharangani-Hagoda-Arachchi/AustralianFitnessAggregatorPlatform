@@ -51,3 +51,51 @@ export const requireRole = (...allowedRoles) => {
         next();
     };
 };
+
+// Check gym ownership
+export const requireGymOwnership = (Gym) => {
+
+    return async (req, res, next) => {
+        try {
+            // Admin can access any gym
+            if (req.user.role === "admin") {
+                return next();
+            }
+
+            const gymId =
+                req.params.gymId ||
+                req.params.id ||
+                req.body.gym;
+
+            const gym = await Gym.findById(gymId);
+
+            if (!gym) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Gym not found"
+                });
+            }
+
+            // Check logged-in user is the gym owner
+            if (String(gym.owner) !== String(req.user._id)) {
+
+                return res.status(403).json({
+                    success: false,
+                    message: "Forbidden: You do not own this gym"
+                });
+            }
+
+            req.gym = gym;
+            next();
+
+
+        } catch (error) {
+
+            res.status(500).json({
+                success: false,
+                message: error.message
+            });
+
+        }
+    };
+};

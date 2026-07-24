@@ -173,3 +173,149 @@ export const getGymById = async (req, res, next) => {
         gym
     });
 }
+
+// Update gym
+export const updateGym = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        // Check if the provided ID is a valid MongoDB ObjectId
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid gym ID"
+            });
+        }
+        const updateData = { ...req.body };
+
+        // Prevent owner from changing approval status
+        // or transferring gym ownership
+        delete req.body.status;
+        delete req.body.owner;
+
+        // Update gym details
+        const gym = await Gym.findByIdAndUpdate(
+            id,
+            updateData,
+            {
+                new: true,
+                runValidators: true
+            }
+        );
+
+        // Check gym exists
+        if (!gym) {
+            return res.status(404).json({
+                success: false,
+                message: "Gym not found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Gym updated successfully",
+            gym
+        });
+
+
+    } catch (error) {
+
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+
+    }
+};
+
+// delete gym
+export const deleteGym = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        // Check if the provided ID is a valid MongoDB ObjectId
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid gym ID"
+            });
+        }
+
+        // Delete gym by ID
+        const gym = await Gym.findByIdAndDelete(id);
+
+        // Check gym exists
+        if (!gym) {
+            return res.status(404).json({
+                success: false,
+                message: "Gym not found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Gym Delete successfully",
+
+        });
+
+
+    } catch (error) {
+
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+
+    }
+};
+
+// Toggle favourite gym
+export const toggleFavourite = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        // Check if gym exists
+        const gym = await Gym.findById(id);
+
+        if (!gym) {
+            return res.status(404).json({
+                success: false,
+                message: "Gym not found"
+            });
+        }
+
+        // Get logged-in user
+        const user = req.user;
+
+        // Check whether gym is already favourited
+        const isFavourited =
+            String(user.favouriteGym) === String(gym._id);
+
+        user.favouriteGym = isFavourited
+            ? null
+            : gym._id;
+
+
+        // Save user favourite without validation
+        await user.save({
+            validateBeforeSave: false
+        });
+
+        res.status(200).json({
+            success: true,
+            message: isFavourited
+                ? "Gym removed from favourites"
+                : "Gym added to favourites",
+            favourited: !isFavourited,
+            favouriteGym: user.favouriteGym
+        });
+
+
+    } catch (error) {
+
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+
+    }
+};
