@@ -90,7 +90,7 @@ const gymSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: ['pending', 'approved', 'rejected', 'suspended'],
-        default: 'pending', 
+        default: 'pending',
     },
 
     isActive: {
@@ -103,6 +103,9 @@ const gymSchema = new mongoose.Schema({
 }
 
 );
-
+gymSchema.index({ location: '2dsphere' });
+gymSchema.index({ name: 'text', description: 'text' }); // text search
+gymSchema.index({ status: 1, isActive: 1 });
+gymSchema.index({ owner: 1 });
 
 export const Gym = mongoose.model("Gym", gymSchema);
