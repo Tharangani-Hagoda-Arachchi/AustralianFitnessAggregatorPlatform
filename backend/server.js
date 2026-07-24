@@ -5,6 +5,7 @@ import swaggerUi from "swagger-ui-express"
 import { connectDB } from "./config/db.js";
 import { authRoute } from "./routes/auth.route.js";
 import { swaggerDocs } from "./config/swagger.js";
+import { gymRoute } from "./routes/gym.route.js";
 
 dotenv.config();
 
@@ -29,6 +30,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 //auth route
 app.use('/api', authRoute)
+//gym route
+app.use('/api', gymRoute)
 
 const PORT = process.env.PORT || 5000;
 
