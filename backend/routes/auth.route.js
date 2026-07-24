@@ -1,6 +1,6 @@
 import express from "express";
-import { forgotPasswordValidator, registerValidator } from "../validators/auth.validator.js";
-import { forgetPassword, getUserProfile, userLogin, userRegister } from "../controllers/auth.controller.js";
+import { forgotPasswordValidator, registerValidator, resetPasswordValidator } from "../validators/auth.validator.js";
+import { forgetPassword, getUserProfile, resetPassword, userLogin, userRegister } from "../controllers/auth.controller.js";
 import { validate } from "../middlewares/validate.middleware.js";
 import { protect } from "../middlewares/auth.middleware.js";
 
@@ -134,3 +134,60 @@ authRoute.get('/auth/me', protect, getUserProfile);
  */
 //forget password
 authRoute.post('/auth/forgot-password', forgotPasswordValidator, validate, forgetPassword);
+
+
+/**
+ * @openapi
+ * /api/auth/reset-password:
+ *   post:
+ *     summary: Reset user password
+ *     description: Resets the user's password using the reset token received via email.
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - token
+ *               - password
+ *             properties:
+ *               token:
+ *                 type: string
+ *                 description: Password reset token received via email
+ *                 example: "8d5a2d8b9d7d2f8d7e5c3b1a9f6e4d2c"
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 minLength: 8
+ *                 example: "NewPassword123@"
+ *     responses:
+ *       200:
+ *         description: Password reset successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Password reset successfully
+ *                 accessToken:
+ *                   type: string
+ *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *       400:
+ *         description: Reset token is invalid or has expired
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Reset token is invalid or has expired.
+ *       500:
+ *         description: Internal server error
+ */
+//reset password
+authRoute.post('/auth/reset-password', resetPasswordValidator, validate, resetPassword);

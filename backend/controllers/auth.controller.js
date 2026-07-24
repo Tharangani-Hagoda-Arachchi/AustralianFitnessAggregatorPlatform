@@ -1,11 +1,12 @@
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
+import crypto from "crypto"
 import { User } from "../models/use.model.js";
 import { createAccessToken, createRefreshToken } from "../utils/tokn.utils.js";
 import { sendEmail } from "../utils/sendEmail.uti.js";
 
 dotenv.config()
-const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET,CLIENT_URL } = process.env;
+const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET, CLIENT_URL } = process.env;
 const cookieOptions = {
     httpOnly: true,
     sameSite: "strict",
@@ -140,13 +141,13 @@ export const getUserProfile = async (req, res, next) => {
 //forget password
 export const forgetPassword = async (req, res, next) => {
     try {
-        const {email} = req.body;
+        const { email } = req.body;
 
         //check email exiist or not
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(200).json({
-                message: "If an account exists for this email, a reset link has been sent. no account"
+                message: "If an account exists for this email, a reset link has been sent."
             });
         }
 
@@ -181,6 +182,61 @@ export const forgetPassword = async (req, res, next) => {
 
         res.status(200).json({
             message: "If an account exists for this email, a reset link has been sent."
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
+
+    }
+};
+
+//reset password
+export const resetPassword = async (req, res, next) => {
+    try {
+        const { token, password } = req.body;
+
+        //hashed token
+        const hashedToken = crypto
+            .createHash("sha256")
+            .update(token)
+            .digest("hex");
+
+        const user = await User.findOne({
+            resetPasswordToken: hashedToken,
+            resetPasswordExpires: { $gt: Date.now() },
+        }).select('+resetPasswordToken +resetPasswordExpires');
+
+        if (!user) {
+            return res.status(400).json({
+                message: "Reset token is invalid or has expired."
+            });
+        }
+
+        //hashed password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        user.password = hashedPassword;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+
+        //create tokens
+        const paylod = { id: user._id, role: user.role };
+        const accessToken = createAccessToken(paylod, ACCESS_TOKEN_SECRET, '15m');
+        const refreshToken = createRefreshToken(paylod, REFRESH_TOKEN_SECRET, '7d');
+
+        //save refresh token
+        user.refreshToken.push(refreshToken);
+        await user.save();
+
+        //send refresh token as cookies
+        res.cookie('refreshToken', refreshToken, { ...cookieOptions, maxAge: 7 * 24 * 60 * 60 * 1000 });
+
+        res.status(200).json({
+            message: "Password reset successfully",
+            accessToken,
         });
 
     } catch (error) {
