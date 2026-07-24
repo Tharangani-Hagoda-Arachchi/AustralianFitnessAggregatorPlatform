@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import crypto from "crypto";
 
 //create user schema
 const userSchema = new mongoose.Schema({
@@ -42,6 +43,11 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: true, // admin can disable/ban a user 
     },
+    
+    // Password reset
+    resetPasswordToken: { type: String, select: false },
+    resetPasswordExpires: { type: Date, select: false },
+
     lastLoginAt: {
         type: Date,
     },
@@ -55,5 +61,16 @@ const userSchema = new mongoose.Schema({
 }
 
 );
+
+// Instance method: generate a password reset token (raw token returned, hashed one stored)
+userSchema.methods.generatePasswordResetToken = function () {
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    this.resetPasswordToken = crypto
+        .createHash('sha256')
+        .update(resetToken)
+        .digest('hex');
+    this.resetPasswordExpires = Date.now() + 15 * 60 * 1000; // 15 minutes
+    return resetToken;
+};
 
 export const User = mongoose.model("User", userSchema);

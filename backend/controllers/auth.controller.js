@@ -2,9 +2,10 @@ import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import { User } from "../models/use.model.js";
 import { createAccessToken, createRefreshToken } from "../utils/tokn.utils.js";
+import { sendEmail } from "../utils/sendEmail.uti.js";
 
 dotenv.config()
-const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = process.env;
+const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET,CLIENT_URL } = process.env;
 const cookieOptions = {
     httpOnly: true,
     sameSite: "strict",
@@ -111,3 +112,82 @@ export const userLogin = async (req, res, next) => {
 
     }
 };
+
+//get loged user
+export const getUserProfile = async (req, res, next) => {
+    try {
+        const user = req.user;
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        res.status(200).json({
+            message: "User detail fetch successfully",
+            user
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
+
+    }
+};
+
+//forget password
+export const forgetPassword = async (req, res, next) => {
+    try {
+        const {email} = req.body;
+
+        //check email exiist or not
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(200).json({
+                message: "If an account exists for this email, a reset link has been sent. no account"
+            });
+        }
+
+        // Generate password reset token
+        const resetToken = user.generatePasswordResetToken();
+
+        // Save hashed token and expiry time
+        await user.save({ validateBeforeSave: false });
+
+        // Create reset password URL
+        const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}`;
+
+        try {
+            // Send reset email
+            await sendEmail({
+                to: user.email,
+                subject: "Reset Your Password",
+                html: `
+                <p>You requested a password reset.</p>
+                <p>This link will expire in 15 minutes.</p>
+                <a href="${resetUrl}">${resetUrl}</a>
+                <p>If you did not request this, please ignore this email.</p>
+            `
+            });
+
+        } catch (error) {
+            user.resetPasswordToken = undefined;
+            user.resetPasswordExpires = undefined;
+            await user.save({ validateBeforeSave: false });
+            message: "Email could not be sent, please try again later"
+        }
+
+        res.status(200).json({
+            message: "If an account exists for this email, a reset link has been sent."
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
+
+    }
+};
+
