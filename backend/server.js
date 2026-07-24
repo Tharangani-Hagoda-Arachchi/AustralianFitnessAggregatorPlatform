@@ -6,6 +6,7 @@ import { connectDB } from "./config/db.js";
 import { authRoute } from "./routes/auth.route.js";
 import { swaggerDocs } from "./config/swagger.js";
 import { gymRoute } from "./routes/gym.route.js";
+import { adminRoute } from "./routes/admin.route.js";
 
 dotenv.config();
 
@@ -32,6 +33,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use('/api', authRoute)
 //gym route
 app.use('/api', gymRoute)
+//admin route
+app.use('/api', adminRoute)
 
 const PORT = process.env.PORT || 5000;
 
