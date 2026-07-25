@@ -2,8 +2,8 @@ import api from "./axioInstance.js";
 
 
 export const checkinApi = {
-  generateQr: (gymId) => api.post('/checkin/qr', { gymId }),
-  checkIn: (gymId, qrToken) => api.post('/checkin', { gymId, qrToken }),
-  getMyHistory: () => api.get('/checkin/history'),
-  getGymCheckinsToday: (gymId) => api.get(`/checkin/gym/${gymId}`),
+  generateQr: (gymId) => api.post('/qr/generate', { gymId }),
+  checkIn: (gymId, qrToken) => api.post('/checkins', { gymId, qrToken }),
+  getMyHistory: () => api.get('/checkins/history'),
+  getGymCheckinsToday: (gymId) => api.get(`/checkins/gym/${gymId}`),
 };

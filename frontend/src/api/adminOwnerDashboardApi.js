@@ -7,16 +7,16 @@ export const dashboardApi = {
 
 export const ownerApi = {
   getMyGyms: () => api.get('/owner/gyms'),
-  getGymAnalytics: (gymId, params) => api.get(`/owner/gyms/${gymId}/analytics`, { params }),
+  getGymAnalytics: (gymId, params) => api.get(`/gyms/${gymId}/analytics`, { params }),
 };
 
 export const adminApi = {
-  getAllUsers: (params) => api.get('/admin/users', { params }),
+  getAllUsers: (params) => api.get('/users', { params }),
   updateUserStatus: (userId, isActive) =>
-    api.put(`/admin/users/${userId}/status`, { isActive }),
+    api.put(`/users/${userId}/status`, { isActive }),
   getAllGyms: (params) => api.get('/admin/gyms', { params }),
-  approveGym: (gymId) => api.put(`/admin/gyms/${gymId}/approve`),
-  rejectGym: (gymId) => api.put(`/admin/gyms/${gymId}/reject`),
-  getAllPayments: (params) => api.get('/admin/payments', { params }),
-  getOverview: () => api.get('/admin/reports/overview'),
+  approveGym: (gymId) => api.put(`/gyms/${gymId}/approve`),
+  rejectGym: (gymId) => api.put(`/gyms/${gymId}/reject`),
+  getAllPayments: (params) => api.get('/payments', { params }),
+  getOverview: () => api.get('/reports/overview'),
 };
