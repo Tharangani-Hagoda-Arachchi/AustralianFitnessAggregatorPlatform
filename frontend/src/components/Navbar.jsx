@@ -170,7 +170,7 @@ const Navbar = () => {
 
               <Link
                 to="/register"
-                className="btn-primary !px-4 !py-1.5"
+                className="btn-primary px-4! py-1.5!"
               >
                 Sign up
               </Link>
