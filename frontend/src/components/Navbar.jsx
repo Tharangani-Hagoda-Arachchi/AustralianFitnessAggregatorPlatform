@@ -154,7 +154,7 @@ const Navbar = () => {
 
               <button
                 onClick={handleLogout}
-                className="btn-secondary !px-4 !py-1.5"
+                className="btn-secondary px-4! py-1.5!"
               >
                 Log out
               </button>

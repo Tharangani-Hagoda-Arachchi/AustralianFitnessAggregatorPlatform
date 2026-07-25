@@ -1,0 +1,8 @@
+import api from './axiosInstance';
+
+export const checkinApi = {
+  generateQr: (gymId) => api.post('/checkin/qr', { gymId }),
+  checkIn: (gymId, qrToken) => api.post('/checkin', { gymId, qrToken }),
+  getMyHistory: () => api.get('/checkin/history'),
+  getGymCheckinsToday: (gymId) => api.get(`/checkin/gym/${gymId}`),
+};
