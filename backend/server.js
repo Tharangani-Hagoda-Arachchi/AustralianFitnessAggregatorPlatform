@@ -7,6 +7,7 @@ import { authRoute } from "./routes/auth.route.js";
 import { swaggerDocs } from "./config/swagger.js";
 import { gymRoute } from "./routes/gym.route.js";
 import { adminRoute } from "./routes/admin.route.js";
+import { ownerRoute } from "./routes/owner.route.js";
 
 dotenv.config();
 
@@ -35,7 +36,8 @@ app.use('/api', authRoute)
 app.use('/api', gymRoute)
 //admin route
 app.use('/api', adminRoute)
-
+//owner route
+app.use('/api', ownerRoute)
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
