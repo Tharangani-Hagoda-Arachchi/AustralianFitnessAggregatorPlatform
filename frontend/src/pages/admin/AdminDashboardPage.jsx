@@ -126,8 +126,8 @@ const AdminDashboardPage = () => {
                 ))}
 
             {tab === 'Users' && (
-                <div className="card !p-0 overflow-x-auto">
-                    <table className="w-full min-w-[560px] text-sm">
+                <div className="card p-0! overflow-x-auto">
+                    <table className="w-full min-w-140 text-sm">
                         <thead className="bg-ink/5 text-left text-xs uppercase tracking-wide text-ink/50">
                             <tr>
                                 <th className="px-4 py-2.5">Name</th>
@@ -153,7 +153,7 @@ const AdminDashboardPage = () => {
                                     </td>
                                     <td className="px-4 py-2.5 text-right">
                                         <button
-                                            className="btn-secondary !px-3 !py-1 text-xs"
+                                            className="btn-secondary px-3! py-1! text-xs"
                                             onClick={() =>
                                                 dispatch(updateUserStatus({ userId: u._id, isActive: !u.isActive }))
                                             }
@@ -219,13 +219,13 @@ const AdminDashboardPage = () => {
                                     {g.status === 'pending' && (
                                         <>
                                             <button
-                                                className="btn-primary !px-3 !py-1 text-xs"
+                                                className="btn-primary px-3! py-1! text-xs"
                                                 onClick={() => dispatch(approveGym(g._id))}
                                             >
                                                 Approve
                                             </button>
                                             <button
-                                                className="btn-danger !px-3 !py-1 text-xs"
+                                                className="btn-danger px-3! py-1! text-xs"
                                                 onClick={() => dispatch(rejectGym(g._id))}
                                             >
                                                 Reject
@@ -267,8 +267,8 @@ const AdminDashboardPage = () => {
                         </div>
                     )}
 
-                    <div className="card !p-0 overflow-x-auto">
-                        <table className="w-full min-w-[560px] text-sm">
+                    <div className="card p-0! overflow-x-auto">
+                        <table className="w-full min-w-140text-sm">
                             <thead className="bg-ink/5 text-left text-xs uppercase tracking-wide text-ink/50">
                                 <tr>
                                     <th className="px-4 py-2.5">User</th>

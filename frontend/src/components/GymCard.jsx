@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 const GymCard = ({gym}) => {
     const image = gym.images?.[0]?.url;
     return (
-        <Link to={`/gyms/${gym._id}`} className="card group flex flex-col overflow-hidden !p-0">
+        <Link to={`/gyms/${gym._id}`} className="card group flex flex-col overflow-hidden p-0!">
             <div className="h-40 w-full overflow-hidden bg-brand-100">
                 {image ? (
                     <img
