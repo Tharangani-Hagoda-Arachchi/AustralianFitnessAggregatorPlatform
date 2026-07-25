@@ -36,7 +36,7 @@ const MembershipPlansPage = () => {
                     </p>
                     <button
                         onClick={() => dispatch(cancelMembership(myMembership._id))}
-                        className="btn-danger mt-3 !px-4 !py-1.5"
+                        className="btn-danger mt-3 px-4! py-1.5!"
                     >
                         Cancel membership
                     </button>
@@ -70,7 +70,7 @@ const MembershipPlansPage = () => {
                                 )}
 
                                 {isCurrent ? (
-                                    <span className="btn-secondary mt-4 w-full cursor-default !border-brand-300 text-brand-700">
+                                    <span className="btn-secondary mt-4 w-full cursor-default border-brand-300! text-brand-700">
                                         Current plan
                                     </span>
                                 ) : hasMembershipHere ? (

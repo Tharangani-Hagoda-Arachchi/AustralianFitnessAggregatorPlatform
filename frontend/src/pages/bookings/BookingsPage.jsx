@@ -72,7 +72,7 @@ const BookingsPage = () => {
                                         <p className="text-xs text-ink/50">Instructor: {b.gymClass.instructor}</p>
                                     )}
                                 </div>
-                                <button className="btn-danger !px-4 !py-1.5" onClick={() => handleCancel(b._id)}>
+                                <button className="btn-danger px-4! py-1.5!" onClick={() => handleCancel(b._id)}>
                                     Cancel
                                 </button>
                             </div>
@@ -103,7 +103,7 @@ const BookingsPage = () => {
                                             </p>
                                         </div>
                                         <button
-                                            className="btn-primary !px-4 !py-1.5"
+                                            className="btn-primary px-4! py-1.5!"
                                             disabled={isFull || alreadyBooked || bookStatus === 'loading'}
                                             onClick={() => handleBook(c._id)}
                                         >

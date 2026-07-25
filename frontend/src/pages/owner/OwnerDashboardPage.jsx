@@ -82,7 +82,7 @@ const OwnerDashboardPage = () => {
                 </div>
                 {myGyms.length > 0 && (
                     <select
-                        className="input sm:max-w-[240px]"
+                        className="input sm:max-w-60"
                         value={selectedGymId}
                         onChange={(e) => setSelectedGymId(e.target.value)}
                     >
@@ -172,8 +172,8 @@ const OwnerDashboardPage = () => {
                         {analytics.recentCheckins.length === 0 ? (
                             <p className="text-sm text-ink/50">No check-ins recorded yet.</p>
                         ) : (
-                            <div className="card !p-0 overflow-x-auto">
-                                <table className="w-full min-w-[360px] text-sm">
+                            <div className="card p-0! overflow-x-auto">
+                                <table className="w-full min-w-90] text-sm">
                                     <thead className="bg-ink/5 text-left text-xs uppercase tracking-wide text-ink/50">
                                         <tr>
                                             <th className="px-4 py-2.5">Member</th>
