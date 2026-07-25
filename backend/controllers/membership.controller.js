@@ -2,6 +2,13 @@ import { Membership } from "../models/membership.model.js";
 import { MembershipPlan } from "../models/membershipPlan.model.js";
 import { Payment } from "../models/payment.model.js";
 
+function addBillingCycle(date, cycle) {
+    const d = new Date(date);
+    if (cycle === 'monthly') d.setMonth(d.getMonth() + 1);
+    if (cycle === 'quarterly') d.setMonth(d.getMonth() + 3);
+    if (cycle === 'yearly') d.setFullYear(d.getFullYear() + 1);
+    return d;
+}
 // Get membership plans for a gym
 export const getPlansForGym = async (req, res, next) => {
     try {

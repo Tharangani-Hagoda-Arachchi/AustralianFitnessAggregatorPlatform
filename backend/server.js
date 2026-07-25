@@ -9,6 +9,7 @@ import { gymRoute } from "./routes/gym.route.js";
 import { adminRoute } from "./routes/admin.route.js";
 import { ownerRoute } from "./routes/owner.route.js";
 import { membershipRoute } from "./routes/membership.rout.js";
+import { checkinRouter } from "./routes/checkin.route.js";
 
 dotenv.config();
 
@@ -41,6 +42,9 @@ app.use('/api', adminRoute)
 app.use('/api', ownerRoute)
 //membership route
 app.use('/api', membershipRoute)
+//membership route
+app.use('/api', checkinRouter)
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
