@@ -1,4 +1,5 @@
-import api from './axioInstance.js'
+import api from "./axioInstance.js";
+
 
 export const authApi = {
   register: (data) => api.post('/auth/register', data),

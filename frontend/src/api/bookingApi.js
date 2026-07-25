@@ -1,4 +1,5 @@
-import api from './axiosInstance';
+import api from "./axioInstance.js";
+
 
 export const bookingApi = {
   getClassesForGym: (gymId) => api.get(`/bookings/classes/gym/${gymId}`),

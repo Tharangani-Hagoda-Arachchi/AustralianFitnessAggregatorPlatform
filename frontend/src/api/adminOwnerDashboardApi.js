@@ -1,4 +1,5 @@
-import api from './axiosInstance';
+import api from "./axioInstance.js";
+
 
 export const dashboardApi = {
   getMyDashboard: () => api.get('/dashboard/me'),

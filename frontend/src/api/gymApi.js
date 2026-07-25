@@ -1,4 +1,5 @@
-import api from './axiosInstance';
+import api from "./axioInstance.js";
+
 
 export const gymApi = {
   search: (params) => api.get('/gyms', { params }),

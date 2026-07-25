@@ -1,7 +1,6 @@
-import { useTheme } from '../context/ThemeContext';
 
-// recharts renders raw SVG, so it needs literal color values rather than
-// Tailwind classes. This centralizes the light/dark pair so every chart
+import { useTheme } from "../context/TheamContext";
+
 // across the app stays visually consistent and switches with the theme.
 export default function useChartColors() {
   const { theme } = useTheme();
