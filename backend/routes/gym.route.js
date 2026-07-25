@@ -296,7 +296,7 @@ gymRoute.post('/gyms', protect, requireRole('owner', 'admin'), createGymValidato
  *         description: Internal server error
  */
 //search gym route
-gymRoute.get('/gyms', searchGymValidator, validate, getGyms);
+gymRoute.get('/gyms', getGyms);
 
 /**
  * @openapi
