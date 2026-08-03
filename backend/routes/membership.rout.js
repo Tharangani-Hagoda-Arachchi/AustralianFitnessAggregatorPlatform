@@ -1,8 +1,9 @@
 import express from "express";
-import { protect, requireRole } from "../middlewares/auth.middleware.js";
-import { cancelMembership, changePlan, createPlan, getPlansForGym, subscribe } from "../controllers/membership.controller.js";
+import { protect, requireGymOwnership, requireRole } from "../middlewares/auth.middleware.js";
+import { cancelMembership, changePlan, createPlan, getMyMembership, getPlansForGym, subscribe } from "../controllers/membership.controller.js";
 import { changePlanValidator, createPlanValidator, subscribeValidator } from "../validators/membership.validator.js";
 import { validate } from "../middlewares/validate.middleware.js";
+import { Gym } from "../models/gym.model.js";
 
 
 export const membershipRoute = express.Router();
@@ -81,11 +82,11 @@ membershipRoute.get('/plans/:gymId', protect, getPlansForGym);
  *       500:
  *         description: Internal server error
  */
-membershipRoute.post('/plans', protect, requireRole('owner', 'admin'), createPlanValidator, validate, createPlan);
+membershipRoute.post('/plans', protect, requireRole('owner', 'admin'), requireGymOwnership(Gym), createPlanValidator, validate, createPlan);
 
 /**
  * @openapi
- * /api/plans/me:
+ * /api/me/plans:
  *   get:
  *     summary: Get logged-in user's active membership
  *     tags: [Memberships]
@@ -101,7 +102,7 @@ membershipRoute.post('/plans', protect, requireRole('owner', 'admin'), createPla
  *         description: Internal server error
  */
 
-membershipRoute.get('/plans/me', protect,);
+membershipRoute.get("/me/plans", protect,getMyMembership);
 
 /**
  * @openapi

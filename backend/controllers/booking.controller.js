@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { GymClass } from "../models/gymClass.model.js";
 import { Booking } from "../models/bookings.model.js";
+import { Gym } from "../models/gym.model.js";
 
 // Get classes for a gym
 export const getClassesForGym = async (req, res, next) => {
@@ -43,10 +44,20 @@ export const createClass = async (req, res, next) => {
     try {
 
         const {
+            gym,
             startTime,
             endTime
         } = req.body;
 
+        const gymId = await Gym.findById(gym)
+
+        // Check whether the gym exists
+        if (!gymId) {
+            return res.status(404).json({
+                success: false,
+                message: "Gym not found"
+            });
+        }
 
         // Check end time is after start time
         if (new Date(endTime) <= new Date(startTime)) {

@@ -1,3 +1,10 @@
+import mongoose from "mongoose";
+import { Gym } from "../models/gym.model.js";
+import { GymClass } from "../models/gymClass.model.js";
+import { Booking } from "../models/bookings.model.js";
+import { Checkin } from "../models/checkin.model.js";
+import { Payment } from "../models/payment.model.js";
+
 // Get gym analytics (Owner)
 export const getGymAnalytics = async (req, res, next) => {
     try {

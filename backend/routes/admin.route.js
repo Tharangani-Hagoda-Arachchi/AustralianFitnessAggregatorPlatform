@@ -288,9 +288,6 @@ adminRoute.get('/payments', protect, requireRole('admin'), getAllPayments);
  *   get:
  *     summary: Get platform overview
  *     tags: [Admin]
- *     security:
- *       - bearerAuth: []
- *
  *     responses:
  *       200:
  *         description: Platform overview fetched successfully

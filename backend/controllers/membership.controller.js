@@ -1,3 +1,4 @@
+import { Gym } from "../models/gym.model.js";
 import { Membership } from "../models/membership.model.js";
 import { MembershipPlan } from "../models/membershipPlan.model.js";
 import { Payment } from "../models/payment.model.js";
@@ -50,6 +51,17 @@ export const createPlan = async (req, res, next) => {
     try {
         // Create membership plan
         const plan = new MembershipPlan(req.body);
+
+        const gymId = await Gym.findById(req.body.gym)
+
+        // Check whether the gym exists
+        if (!gymId) {
+            return res.status(404).json({
+                success: false,
+                message: "Gym not found",
+                MembershipPlan
+            });
+        }
 
         await plan.save();
 
@@ -161,10 +173,14 @@ export const subscribe = async (req, res, next) => {
         payment.membership = membership._id;
         await payment.save();
 
+        const updatedMembership = await Membership.findById(membership._id)
+            .populate("gym", "name")
+            .populate("plan", "name price billingCycle perks");
+
         res.status(201).json({
             success: true,
             message: "Membership subscribed successfully",
-            membership,
+            membership:updatedMembership,
             payment
         });
 
@@ -244,11 +260,16 @@ export const changePlan = async (req, res, next) => {
 
         await membership.save();
 
+        // Get updated membership with populated data
+        const updatedMembership = await Membership.findById(membership._id)
+            .populate("gym", "name")
+            .populate("plan", "name price billingCycle perks");
+
         // Send response
         res.status(200).json({
             success: true,
             message: `Membership ${action} successfully`,
-            membership
+            membership:updatedMembership
         });
 
     } catch (error) {

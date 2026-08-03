@@ -1,9 +1,10 @@
 import express from "express";
 import { cancelBooking, createBooking, createClass, getClassesForGym, getMyBookings } from "../controllers/booking.controller.js";
-import { protect, requireRole } from "../middlewares/auth.middleware.js";
+import { protect, requireGymOwnership, requireRole } from "../middlewares/auth.middleware.js";
 import { createBookingValidator, createClassValidator } from "../validators/booking.validate.js";
 import { validate } from "../middlewares/validate.middleware.js";
 import { validateQrToken } from "../utils/qrService.js";
+import { Gym } from "../models/gym.model.js";
 
 export const gymClassRoute = express.Router();
 
@@ -99,7 +100,7 @@ gymClassRoute.get( "/classes/gym/:gymId", getClassesForGym);
  */
 
 // Create class (owner/admin)
-gymClassRoute.post("/classes", protect, requireRole("owner", "admin"), createClassValidator, validate, createClass);
+gymClassRoute.post("/classes", protect, requireRole("owner", "admin"),requireGymOwnership(Gym), createClassValidator, validate, createClass);
 
 
 /**
