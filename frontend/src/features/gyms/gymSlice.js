@@ -56,6 +56,17 @@ export const createGym = createAsyncThunk('gyms/create', async (data, { rejectWi
     }
 });
 
+export const deleteGymById = createAsyncThunk('gyms/deleteById', async (gymId, { rejectWithValue }) => {
+    try {
+        const res = await gymApi.remove(gymId);
+        return res.data;
+    } catch (err) {
+        return rejectWithValue(
+            error.response?.data?.message || "Delete failed"
+        );
+    }
+});
+
 const gymSlice = createSlice({
     name: 'gyms',
     initialState,
@@ -98,7 +109,12 @@ const gymSlice = createSlice({
             })
             .addCase(createGym.fulfilled, (state, action) => {
                 state.results.unshift(action.payload);
-            });
+            })
+            .addCase(deleteGymById.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.message = action.payload.message;
+            })
+
     },
 });
 

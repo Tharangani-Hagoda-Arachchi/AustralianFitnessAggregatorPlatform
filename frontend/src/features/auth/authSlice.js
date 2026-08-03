@@ -94,9 +94,6 @@ const authSlice = createSlice({
             .addCase(registerUser.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.user = action.payload.user;
-                state.token = action.payload.token;
-                state.isAuthenticated = true;
-                localStorage.setItem('token', action.payload.token);
             })
             .addCase(registerUser.rejected, (state, action) => {
                 state.status = 'failed';
@@ -110,9 +107,9 @@ const authSlice = createSlice({
             .addCase(loginUser.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.user = action.payload.user;
-                state.token = action.payload.token;
+                state.token = action.payload.accessToken;
                 state.isAuthenticated = true;
-                localStorage.setItem('token', action.payload.token);
+                localStorage.setItem('token', action.payload.accessToken);
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.status = 'failed';
@@ -155,9 +152,9 @@ const authSlice = createSlice({
             })
             .addCase(resetPassword.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.token = action.payload.token;
+                state.token = action.payload.accessToken;
                 state.isAuthenticated = true;
-                localStorage.setItem('token', action.payload.token);
+                localStorage.setItem('token', action.payload.accessToken);
             })
             .addCase(resetPassword.rejected, (state, action) => {
                 state.status = 'failed';

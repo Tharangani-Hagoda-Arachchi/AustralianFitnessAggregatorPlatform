@@ -2,7 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hook';
-import { clearAuthError, registerUser } from '../../features/auth/authSlice';
+import { clearAuthError, registerUser,  } from '../../features/auth/authSlice';
 import Alert from '../../components/Alert';
 
 const RegisterPage = () => {
@@ -13,16 +13,11 @@ const RegisterPage = () => {
 
     useEffect(() => () => dispatch(clearAuthError()), [dispatch]);
 
-    useEffect(() => {
-        if (isAuthenticated && user) {
-            const roleHome = { admin: '/admin', owner: '/owner', user: '/dashboard' }[user.role];
-            navigate(roleHome, { replace: true });
-        }
-    }, [isAuthenticated, user, navigate]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
         dispatch(registerUser(form));
+         navigate('/login');
     };
     return (
         <div className="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center px-4 py-12">
@@ -77,8 +72,8 @@ const RegisterPage = () => {
                                 key={r}
                                 onClick={() => setForm({ ...form, role: r })}
                                 className={`rounded-lg border px-3 py-2 text-sm font-medium transition ${form.role === r
-                                    ? 'border-brand-500 bg-brand-50 text-brand-700'
-                                    : 'border-ink/15 text-ink/60 hover:border-ink/30'
+                                    ? 'border-green-500 bg-green-100 text-green-700'
+                                    : 'border-ink/15 text-ink/60 hover:border-ink/90 '
                                     }`}
                             >
                                 {r === 'user' ? 'A member' : 'A gym owner'}

@@ -66,6 +66,9 @@ const AdminDashboardPage = () => {
         ];
     }, [overview]);
 
+    const gymStatusData = useMemo(() => statusCounts(gyms, "status"), [gyms]);
+    const paymentStatusData = useMemo(() => statusCounts(payments, "status"), [payments]);
+
     return (
         <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
             <h1 className="mb-1 font-display text-2xl font-semibold">Admin dashboard</h1>
@@ -170,7 +173,7 @@ const AdminDashboardPage = () => {
 
             {tab === 'Gyms' && (
                 <>
-                    {gymStatusData.length > 0 && (
+                    {gyms.length > 0 && (
                         <div className="card mb-6">
                             <h2 className="mb-2 font-display text-sm font-semibold">Gyms by status</h2>
                             <ResponsiveContainer width="100%" height={200}>
@@ -241,7 +244,7 @@ const AdminDashboardPage = () => {
 
             {tab === 'Payments' && (
                 <>
-                    {paymentStatusData.length > 0 && (
+                    {payments > 0 && (
                         <div className="card mb-6">
                             <h2 className="mb-2 font-display text-sm font-semibold">Payments by status</h2>
                             <ResponsiveContainer width="100%" height={200}>

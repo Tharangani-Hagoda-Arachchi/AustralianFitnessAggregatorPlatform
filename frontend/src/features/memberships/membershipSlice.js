@@ -43,7 +43,7 @@ export const subscribeToPlan = createAsyncThunk(
     async (planId, { rejectWithValue }) => {
         try {
             const res = await membershipApi.subscribe(planId);
-            return res.data.membership;
+            return res.data;
         } catch (err) {
             return rejectWithValue(extractError(err));
         }
@@ -55,7 +55,7 @@ export const changeMembershipPlan = createAsyncThunk(
     async ({ membershipId, newPlanId }, { rejectWithValue }) => {
         try {
             const res = await membershipApi.changePlan(membershipId, newPlanId);
-            return res.data.membership;
+            return res.data;
         } catch (err) {
             return rejectWithValue(extractError(err));
         }
@@ -70,6 +70,22 @@ export const cancelMembership = createAsyncThunk(
             return res.data.membership;
         } catch (err) {
             return rejectWithValue(extractError(err));
+        }
+    }
+);
+
+export const createMembershipPlan = createAsyncThunk(
+    "plans/create",
+    async (data, { rejectWithValue }) => {
+        try {
+            const res = await membershipApi.createPlan(data);
+
+            return res.data;
+        } catch (err) {
+            return rejectWithValue(
+                err.response?.data?.message ||
+                "Failed to schedule plan"
+            );
         }
     }
 );
@@ -104,17 +120,23 @@ const membershipSlice = createSlice({
             })
             .addCase(subscribeToPlan.fulfilled, (state, action) => {
                 state.actionStatus = 'succeeded';
-                state.myMembership = action.payload;
+                state.myMembership = action.payload.membership;
             })
             .addCase(subscribeToPlan.rejected, (state, action) => {
                 state.actionStatus = 'failed';
                 state.error = action.payload;
             })
             .addCase(changeMembershipPlan.fulfilled, (state, action) => {
-                state.myMembership = action.payload;
+                console.log("NEW MEMBERSHIP:", action.payload.membership);
+                state.myMembership = action.payload.membership;
             })
             .addCase(cancelMembership.fulfilled, (state, action) => {
-                state.myMembership = action.payload;
+                state.myMembership = action.payload
+                state.myMembership = null;
+            })
+            .addCase(createMembershipPlan.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.myMembership = action.payload
             });
     },
 });

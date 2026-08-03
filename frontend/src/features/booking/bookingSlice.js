@@ -63,6 +63,21 @@ export const cancelBooking = createAsyncThunk(
         }
     }
 );
+export const createClass = createAsyncThunk(
+    "classes/create",
+    async (data, { rejectWithValue }) => {
+        try {
+            const res = await bookingApi.createClass(data);
+
+            return res.data;
+        } catch (err) {
+            return rejectWithValue(
+                err.response?.data?.message ||
+                "Failed to schedule class"
+            );
+        }
+    }
+);
 
 const bookingSlice = createSlice({
     name: 'bookings',
@@ -105,8 +120,15 @@ const bookingSlice = createSlice({
             })
             .addCase(cancelBooking.fulfilled, (state, action) => {
                 state.myBookings = state.myBookings.filter((b) => b._id !== action.payload);
+            })
+
+            .addCase(createClass.fulfilled, (state, action) => {
+                state.status = "succeeded";
+
+                // Add newly created class to list
+                state.classes.push(action.payload.class);
             });
-    },
+},
 });
 
 export const { clearBookingError } = bookingSlice.actions;
